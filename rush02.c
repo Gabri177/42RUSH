@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "rush02.h"
+#include <string.h>
 
 unsigned int hash_function(const char *str) {  //la funcion con que podemos calcular el valor de itendidad de una cadena
     unsigned long hash = 0;                    // se puede considerar como se puede calcular la DNI de una cadena
@@ -66,30 +67,23 @@ int hash_append_node (hashset *hash, char *key, char *contenido) //es la funcion
     return (TRUE);
 }
 
-void    hash_query (hashset *hash, char *key) // con esta funcion podemos buscar el VALUE segun el KEY
+char    *hash_query (hashset *hash, char *key) // con esta funcion podemos buscar el VALUE segun el KEY
 {                                
     int     index = hash_function (key);        // pasamos el KEY al funcion de HASH para obtener su 'DNI';
     node    *presente;                           
 
     presente = hash->bucket[index];    
     if (presente && presente->next == NULL)        //si ary[DNI] cuyo next dirige a NULL, signifiga que solo existe este unico elemento, lo devolvemos
-    {
-        ft_putstr (presente->contenido);
-        return ;
-    }
+        return (presente->contenido);
     else
     {
         while (presente)                            //si ary[DNI] cuyo next no dirige a NULL, significa que en la misma posicion no solo guarda un valor
         {
-            if (ft_strcmp (key, presente->key) == 0)    // en este caso hace falta usar un bucle para pasar por este arry con el pontero principio que es
-            {                                                    // justamente presente. la manera de suma para contador es `presente = presete->next`
-                ft_putstr (presente->contenido);
-                return ;
-            }
+            if (ft_strcmp (key, presente->key) == 0)    // en este caso hace falta usar un bucle para pasar por este arry con el pontero principio que es                                              // justamente presente. la manera de suma para contador es `presente = presete->next`
+                return (presente->contenido);
             presente = presente->next;
         }
-        ft_putstr ("The key did not exist!!!\n");
-        return ;
+        return (NULL);
     }
 }
 
@@ -132,7 +126,7 @@ void hash_display (hashset* hashset) // esta funcion la usamos solamente para ha
             temp = hashset->bucket[index];
             while (temp)
             {
-                printf ("KEY :%s\n*******VALUE:%s\n\n", temp->key, temp->contenido);
+                printf ("KEY:%s  VALUE:%s\n\n", temp->key, temp->contenido);
                 temp = temp->next;
             }
         }
@@ -154,14 +148,38 @@ void    ft_putstr (char *str) // alternativa de `printf`
     }
 }
 
-int main() 
+
+int main() // 这里我们要用自己的strcat函数   还有自己的strlen函数
 {
     
     hashset hash;
     hash_establecion (&hash, "numbers.dict");
     
-    //hash_query (&hash, "1");
 
-    hash_display (&hash);
+    char *tem_num;
+    char *tem_value;
+    char *gewei;
+    for (int i = 2; i <= 9; i ++)
+    {
+        for (int j = 1; j <= 9; j ++)
+        {
+            tem_num = (char *) malloc (sizeof (char) * 3);
+            gewei = (char *) malloc (sizeof (char) * 3);
+            tem_num[0] = i + '0';
+            tem_num[1] = '0';
+            tem_num[2] = '\0';
+            gewei[0] = j + '0';
+            gewei[1] = '\0';
+            tem_value = (char *) malloc (sizeof (char) * (strlen(hash_query(&hash, tem_num)) + strlen (hash_query(&hash, gewei) + 2)));
+            strcat(tem_value, hash_query(&hash, tem_num));
+            strcat(tem_value, "-");
+            strcat(tem_value, hash_query(&hash, gewei));
+            tem_num[1] = gewei[0];
+            //printf("%s ", tem_num);
+            hash_append_node (&hash, tem_num, tem_value);
+        }
+    }
+    //hash_display (&hash);
+    ft_putstr(hash_query (&hash, "39"));
 
 }

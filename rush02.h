@@ -29,7 +29,7 @@ int		ft_strcmp(char *s1, char *s2);
 unsigned int hash_function(const char *str);
 void hash_establecion (hashset *hash, char *dict);
 int hash_append_node (hashset *hash, char *key, char *contenido);
-void    hash_query (hashset *hash, char *key);
+char    *hash_query (hashset *hash, char *key);
 char    **file_to_str (char *dir);
 void hash_display (hashset* hashset);
 void    ft_putstr (char *str);
